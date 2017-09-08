@@ -156,6 +156,19 @@ function updateUsuario(req, res) {
 
 function deleteUsuario(req, res) {
 	// body...
+	var usuarioId = req.params.id;
+	connection.query('DELETE FROM '+TABLE+' WHERE idusuario = ?', [usuarioId], function(error, result, field){
+		if (error) {
+			res.status(500).send({ message: "Error de conexión"});
+		}
+		if(result['affectedRows'] == 0) {
+			res.status(400).send({ message: "No existe dato del usuario"});
+		} 
+		else {
+			console.log(result);
+			res.status(200).send({ message: "Usuario eliminado correctamente" });
+		}
+	});
 }
 
 module.exports = {
