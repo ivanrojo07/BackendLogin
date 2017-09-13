@@ -24,7 +24,7 @@ function loginUsuario(req, res) {
 	var email = req.body.email;
 	var password = sha1(req.body.password);
 	var sql = 'SELECT * FROM '+TABLE+' WHERE email = '+email+' and password = '+password;
-	console.log(sql);
+	// console.log(sql);
 
 	// var query = connection.query('SELECT * FROM '+TABLE+' WHERE email = ?', [email], function(error,results,fields) {
 	// 	if (error) {
@@ -56,7 +56,8 @@ function loginUsuario(req, res) {
 			res.status(200).send({ failed : "El usuario o la contraseña son incorrectas" });
 		}
 		else {
-			res.status(200).send({ success : "Usuario logeado " });
+			res.status(200).send({ success : "Usuario logeado" });
+			
 		}
 	})
 }
@@ -87,25 +88,27 @@ function getUsuario(req, res) {
 			res.status(500).send({message: "Error en la consulta"});
 		} 
 		else {
-			res.status(200).send({usuario: result});
+
+			usuario = new Usuario(results[0].nombre, results[0].apellido, results[0].email, results[0].password);
+      		res.status(200).send({ usuario : usuario });
 		}
 	});
 }
 
 function saveUsuario(req, res) {
 	// body...
-	var usuario = new Usuario();
+	var usuario = new Usuario(); 
 	var params = req.body;
 
 	usuario.nombre = params.nombre;
 	usuario.apellido = params.apellido;
 	usuario.email = params.email;
 	usuario.password = sha1(params.password);
-	console.log(sha1(usuario.password));
+	// console.log(sha1(usuario.password));
 	var query = connection.query('INSERT INTO '+DATABASE+'.'+TABLE+' SET ?', usuario, function(error, results, fields){
 		if (error) throw error;
 		else{
-			res.status(200).send({ usuario: usuario});
+			res.status(200).send({ usuario : usuario});
 		}
 	});
 	// console.log(query.sql);
@@ -146,7 +149,8 @@ function updateUsuario(req, res) {
 					res.status(500).send({message: "Error en la consulta"});
 				} 
 				else {
-					res.status(200).send({usuario : result});
+					usuario = new Usuario(results[0].nombre, results[0].apellido, results[0].email, results[0].password);
+      				res.status(200).send({ usuario : usuario });
 				}
 			});
 		}
